@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  tomcat:
+    image: tomcat:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/postgres
+      DB_USER: admin
+      DB_PASSWORD: admin
+
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./target/SimpleSpringTraineeTask.war:/usr/local/tomcat/webapps/SimpleSpringTraineeTask.war
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
