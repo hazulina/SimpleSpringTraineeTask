@@ -1,17 +1,17 @@
 package org.trainee.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.trainee.dto.IncomingPerformerDto;
 import org.trainee.dto.OutGoingPerformerDto;
-import org.trainee.dto.projection.TaskProjectionDto;
 import org.trainee.entity.PerformerEntity;
 import org.trainee.entity.ProjectEntity;
 import org.trainee.entity.TaskEntity;
 import org.trainee.mapper.PerformerDtoMapperImpl;
 import org.trainee.repository.PerformerRepository;
-import org.trainee.service.PerformerService;
 import org.trainee.service.impl.PerformerServiceImpl;
 
 import java.sql.Timestamp;
@@ -19,10 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 
 class PerformerServiceTest {
@@ -41,14 +37,14 @@ class PerformerServiceTest {
         //given
         UUID testId = UUID.randomUUID();
         PerformerEntity test = createEntity(testId);
-        when(repository.findByIdWithProject(any())).thenReturn(Optional.of(test));
+        Mockito.when(repository.findByIdWithProject(ArgumentMatchers.any())).thenReturn(Optional.of(test));
         OutGoingPerformerDto given = dtoMapper.map(test);
 
         //when
         OutGoingPerformerDto actual = service.findById(testId);
 
         //then
-        assertThat(actual)
+        Assertions.assertThat(actual)
                 .isNotNull()
                 .isExactlyInstanceOf(OutGoingPerformerDto.class)
                 .isEqualTo(given);
@@ -61,7 +57,7 @@ class PerformerServiceTest {
         //When
 
         //Then
-        assertThat(service).isNotNull().isInstanceOf(PerformerService.class);
+        Assertions.assertThat(service).isNotNull().isInstanceOf(PerformerService.class);
     }
 
     @Test
@@ -70,14 +66,14 @@ class PerformerServiceTest {
         //Given
         List<PerformerEntity> test = new ArrayList<>();
         test.add(createEntity(UUID.randomUUID()));
-        when(repository.findAllWithProjects()).thenReturn(test);
+        Mockito.when(repository.findAllWithProjects()).thenReturn(test);
 
         //When
         List<OutGoingPerformerDto> actual = service.findAll();
 
 
         //Then
-        assertThat(actual).isNotNull();
+        Assertions.assertThat(actual).isNotNull();
 
     }
 
@@ -88,12 +84,12 @@ class PerformerServiceTest {
         given.setRole("development");
         PerformerEntity mockEntity = new PerformerEntity();
         mockEntity.setRole("DEVELOPMENT");
-        when(repository.save(any())).thenReturn(mockEntity);
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(mockEntity);
 
         //When
         OutGoingPerformerDto actual = service.saveOrUpdate(given);
         //Then
-        assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("role", "DEVELOPMENT");
+        Assertions.assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("role", "DEVELOPMENT");
     }
 
     @Test
@@ -105,12 +101,12 @@ class PerformerServiceTest {
         given.setRole("development");
         PerformerEntity mockEntity = new PerformerEntity();
         mockEntity.setRole("DEVELOPMENT");
-        when(repository.save(any())).thenReturn(mockEntity);
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(mockEntity);
 
         //When
         OutGoingPerformerDto actual = service.saveOrUpdate(given);
         //Then
-        assertThat(actual).isNotNull()
+        Assertions.assertThat(actual).isNotNull()
                 .hasFieldOrPropertyWithValue("role", "DEVELOPMENT");
     }
 
@@ -124,7 +120,7 @@ class PerformerServiceTest {
         String message = service.delete(uuid);
 
         //Then
-        assertThat("Performer with uuid: " + uuid + " was deleted").isEqualTo(message);
+        Assertions.assertThat("Performer with uuid: " + uuid + " was deleted").isEqualTo(message);
     }
 
     private PerformerEntity createEntity(UUID testId) {

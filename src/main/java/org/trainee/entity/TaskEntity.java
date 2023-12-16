@@ -26,10 +26,10 @@ public class TaskEntity {
     private String taskStatus;
     @Column(name = "task_deadline")
     private Timestamp taskDeadline;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "task_performer")
     private PerformerEntity taskPerformer;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "task_project")
     private ProjectEntity taskProject;
 

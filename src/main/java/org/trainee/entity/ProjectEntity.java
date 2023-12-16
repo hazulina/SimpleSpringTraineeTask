@@ -23,13 +23,13 @@ public class ProjectEntity {
     private Timestamp projectStartDate;
     @Column(name = "project_deadline_date")
     private Timestamp projectDeadlineDate;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "project_performers",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "performer_id"))
     private List<PerformerEntity> projectPerformers;
-    @OneToMany(mappedBy = "taskProject")
+    @OneToMany(mappedBy = "taskProject", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TaskEntity> projectTasks;
 
     public ProjectEntity() {
@@ -107,8 +107,8 @@ public class ProjectEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ProjectEntity)) return false;
-        ProjectEntity entity = (ProjectEntity) o;
-        return Objects.equals(projectId, entity.projectId) && Objects.equals(projectName, entity.projectName) && Objects.equals(projectStartDate, entity.projectStartDate) && Objects.equals(projectDeadlineDate, entity.projectDeadlineDate) && Objects.equals(projectPerformers, entity.projectPerformers) && Objects.equals(projectTasks, entity.projectTasks);
+        ProjectEntity that = (ProjectEntity) o;
+        return Objects.equals(projectId, that.projectId) && Objects.equals(projectName, that.projectName) && Objects.equals(projectStartDate, that.projectStartDate) && Objects.equals(projectDeadlineDate, that.projectDeadlineDate) && Objects.equals(projectPerformers, that.projectPerformers) && Objects.equals(projectTasks, that.projectTasks);
     }
 
     @Override

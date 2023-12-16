@@ -1,21 +1,18 @@
 package org.trainee.config;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.trainee.config.WebConfig;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-public class WebConfigTest {
+class WebConfigTest {
 
     @Test
-    public void testConfigureDefaultServletHandling() {
+    void testConfigureDefaultServletHandling() {
         WebConfig webConfig = new WebConfig();
-        DefaultServletHandlerConfigurer configurer = mock(DefaultServletHandlerConfigurer.class);
+        DefaultServletHandlerConfigurer configurer = Mockito.mock(DefaultServletHandlerConfigurer.class);
 
         webConfig.configureDefaultServletHandling(configurer);
 
-        verify(configurer).enable();
+        Mockito.verify(configurer).enable();
     }
 }

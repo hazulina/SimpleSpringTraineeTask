@@ -1,6 +1,8 @@
 package org.trainee.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.trainee.dto.IncomingProjectDto;
@@ -10,7 +12,6 @@ import org.trainee.entity.ProjectEntity;
 import org.trainee.entity.TaskEntity;
 import org.trainee.mapper.ProjectDtoMapperImpl;
 import org.trainee.repository.ProjectRepository;
-import org.trainee.service.ProjectService;
 import org.trainee.service.impl.ProjectServiceImpl;
 
 import java.sql.Timestamp;
@@ -18,10 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 
 class ProjectServiceTest {
@@ -36,13 +33,13 @@ class ProjectServiceTest {
         //Given
         UUID testId = UUID.randomUUID();
         Optional<ProjectEntity> test = Optional.of(createEntity());
-        when(repository.findByIdWithPerformers(any())).thenReturn(test);
+        Mockito.when(repository.findByIdWithPerformers(ArgumentMatchers.any())).thenReturn(test);
         OutGoingProjectDto given = dtoMapper.map(test.orElseThrow());
         //When
         OutGoingProjectDto result = service.findById(testId);
 
         //Then
-        assertThat(result)
+        Assertions.assertThat(result)
                 .isNotNull()
                 .isExactlyInstanceOf(OutGoingProjectDto.class)
                 .isEqualTo(given);
@@ -53,13 +50,13 @@ class ProjectServiceTest {
     void should_findAll_and_return_List_of_ProjectDto() {
 
         //Given
-        when(repository.findAll()).thenReturn(new ArrayList<>());
+        Mockito.when(repository.findAll()).thenReturn(new ArrayList<>());
 
         //When
         List<OutGoingProjectDto> actual = service.findAll();
 
         //Then
-        assertThat(actual).isNotNull();
+        Assertions.assertThat(actual).isNotNull();
     }
 
     @Test
@@ -72,13 +69,13 @@ class ProjectServiceTest {
         ProjectEntity mockEntity = new ProjectEntity();
         mockEntity.setProjectName("best project");
 
-        when(repository.save(any())).thenReturn(mockEntity);
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(mockEntity);
 
         //When
         OutGoingProjectDto actual = service.saveOrUpdate(given);
 
         //Then
-        assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("projectName", "best project");
+        Assertions.assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("projectName", "best project");
     }
 
     @Test
@@ -94,13 +91,13 @@ class ProjectServiceTest {
         mockEntity.setProjectId(uuid);
         mockEntity.setProjectName("best project");
 
-        when(repository.save(any())).thenReturn(mockEntity);
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(mockEntity);
 
         //When
         OutGoingProjectDto actual = service.saveOrUpdate(given);
 
         //Then
-        assertThat(actual).isNotNull()
+        Assertions.assertThat(actual).isNotNull()
                 .hasFieldOrPropertyWithValue("projectName", "best project")
                 .hasFieldOrPropertyWithValue("projectId", uuid.toString());
     }
@@ -115,7 +112,7 @@ class ProjectServiceTest {
         String message = service.delete(uuid);
 
         //Then
-        assertThat("Project with uuid: " + uuid + " was deleted").isEqualTo(message);
+        Assertions.assertThat("Project with uuid: " + uuid + " was deleted").isEqualTo(message);
     }
 
     private ProjectEntity createEntity() {

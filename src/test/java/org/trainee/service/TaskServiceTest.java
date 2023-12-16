@@ -1,6 +1,8 @@
 package org.trainee.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.trainee.dto.IncomingTaskDto;
@@ -11,7 +13,6 @@ import org.trainee.entity.TaskEntity;
 import org.trainee.mapper.TaskDtoMapper;
 import org.trainee.mapper.TaskDtoMapperImpl;
 import org.trainee.repository.TaskRepository;
-import org.trainee.service.TaskService;
 import org.trainee.service.impl.TaskServiceImpl;
 
 import java.sql.Timestamp;
@@ -19,10 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 class TaskServiceTest {
     private final TaskRepository repository = Mockito.mock(TaskRepository.class);
@@ -36,14 +33,14 @@ class TaskServiceTest {
         //given
         UUID testId = UUID.randomUUID();
         Optional<TaskEntity> test = createEntity();
-        when(repository.findByTaskId(any())).thenReturn(test);
+        Mockito.when(repository.findByTaskId(ArgumentMatchers.any())).thenReturn(test);
         OutGoingTaskDto given = dtoMapper.map(test.orElseThrow());
 
         //when
         OutGoingTaskDto result = service.findById(testId);
 
         //then
-        assertThat(result)
+        Assertions.assertThat(result)
                 .isNotNull()
                 .isExactlyInstanceOf(OutGoingTaskDto.class)
                 .isEqualTo(given);
@@ -53,13 +50,13 @@ class TaskServiceTest {
     void should_findAll_and_return_List_of_TaskDto() {
 
         //Given
-        when(repository.findAll()).thenReturn(new ArrayList<>());
+        Mockito.when(repository.findAll()).thenReturn(new ArrayList<>());
 
         //When
         List<OutGoingTaskDto> actual = service.findAll();
 
         //Then
-        assertThat(actual).isNotNull();
+        Assertions.assertThat(actual).isNotNull();
 
     }
 
@@ -86,12 +83,12 @@ class TaskServiceTest {
                 test2,
                 test1);
 
-        when(repository.save(any())).thenReturn(mockEntity);
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(mockEntity);
 
         //When
         OutGoingTaskDto actual = service.saveOrUpdate(given);
         //Then
-        assertThat(actual)
+        Assertions.assertThat(actual)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("taskStatus", "AT WORK")
                 .hasFieldOrPropertyWithValue("taskPriority", "LOW");
@@ -110,13 +107,13 @@ class TaskServiceTest {
         mockEntity.setTaskId(uuid);
         mockEntity.setTaskStatus("AT WORK");
         mockEntity.setTaskPriority("LOW");
-        when(repository.save(any())).thenReturn(mockEntity);
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(mockEntity);
 
         //When
         OutGoingTaskDto actual = service.saveOrUpdate(given);
 
         //Then
-        assertThat(actual)
+        Assertions.assertThat(actual)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("taskId", uuid.toString())
                 .hasFieldOrPropertyWithValue("taskStatus", "AT WORK")
@@ -133,7 +130,7 @@ class TaskServiceTest {
         String message = service.delete(uuid);
 
         //Then
-        assertThat("Task with uuid: " + uuid + " was deleted").isEqualTo(message);
+        Assertions.assertThat("Task with uuid: " + uuid + " was deleted").isEqualTo(message);
     }
 
     private Optional<TaskEntity> createEntity() {

@@ -2,11 +2,11 @@ package org.trainee.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.trainee.dto.IncomingPerformerDto;
 import org.trainee.dto.OutGoingPerformerDto;
@@ -15,11 +15,6 @@ import org.trainee.service.PerformerService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class PerformerControllerTest {
 
@@ -38,66 +33,66 @@ class PerformerControllerTest {
     }
 
     @Test
-    public void findAll() throws Exception {
+    void findAll() throws Exception {
         List<OutGoingPerformerDto> performer = new ArrayList<>();
-        when(performerService.findAll()).thenReturn(performer);
+        Mockito.when(performerService.findAll()).thenReturn(performer);
 
-        mockMvc.perform(get("/performers"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray());
+        mockMvc.perform(MockMvcRequestBuilders.get("/performers"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
     }
 
     @Test
-    public void findById() throws Exception {
+    void findById() throws Exception {
         UUID performerId = UUID.randomUUID();
         OutGoingPerformerDto performerDto = new OutGoingPerformerDto();
         performerDto.setPerformerId(performerId.toString());
 
-        when(performerService.findById(performerId)).thenReturn(performerDto);
+        Mockito.when(performerService.findById(performerId)).thenReturn(performerDto);
 
-        mockMvc.perform(get("/performers/{uuid}", performerId))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.performerId").value(performerId.toString()));
+        mockMvc.perform(MockMvcRequestBuilders.get("/performers/{uuid}", performerId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.performerId").value(performerId.toString()));
     }
 
     @Test
-    public void addNewPerformer() throws Exception {
+    void addNewPerformer() throws Exception {
         IncomingPerformerDto incomingPerformerDto = new IncomingPerformerDto();
         OutGoingPerformerDto savedPerformerDto = new OutGoingPerformerDto();
-        when(performerService.saveOrUpdate(any(IncomingPerformerDto.class))).thenReturn(savedPerformerDto);
+        Mockito.when(performerService.saveOrUpdate(ArgumentMatchers.any(IncomingPerformerDto.class))).thenReturn(savedPerformerDto);
 
-        mockMvc.perform(post("/performers")
+        mockMvc.perform(MockMvcRequestBuilders.post("/performers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(incomingPerformerDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").value(savedPerformerDto));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(savedPerformerDto));
     }
 
     @Test
-    public void updatePerformer() throws Exception {
+    void updatePerformer() throws Exception {
         IncomingPerformerDto incomingPerformerDto = new IncomingPerformerDto();
         OutGoingPerformerDto updatedPerformerDto = new OutGoingPerformerDto();
-        when(performerService.saveOrUpdate(any(IncomingPerformerDto.class))).thenReturn(updatedPerformerDto);
+        Mockito.when(performerService.saveOrUpdate(ArgumentMatchers.any(IncomingPerformerDto.class))).thenReturn(updatedPerformerDto);
 
-        mockMvc.perform(put("/performers")
+        mockMvc.perform(MockMvcRequestBuilders.put("/performers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(incomingPerformerDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").value(updatedPerformerDto));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(updatedPerformerDto));
     }
 
     @Test
-    public void deletePerformer() throws Exception {
+    void deletePerformer() throws Exception {
         UUID performerId = UUID.randomUUID();
-        when(performerService.delete(performerId)).thenReturn("Performer deleted successfully");
+        Mockito.when(performerService.delete(performerId)).thenReturn("Performer deleted successfully");
 
-        mockMvc.perform(delete("/performers/{uuid}", performerId))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Performer deleted successfully"));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/performers/{uuid}", performerId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Performer deleted successfully"));
     }
 
     private static String asJsonString(final Object obj) {

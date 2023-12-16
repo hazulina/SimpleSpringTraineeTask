@@ -22,9 +22,9 @@ public class PerformerEntity {
     private String email;
     @Column(name = "performer_role")
     private String role;
-    @ManyToMany(mappedBy = "projectPerformers")
+    @ManyToMany(mappedBy = "projectPerformers", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProjectEntity> performerProjects;
-    @OneToMany(mappedBy = "taskPerformer")
+    @OneToMany(mappedBy = "taskPerformer", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TaskEntity> performerTasks;
 
 
